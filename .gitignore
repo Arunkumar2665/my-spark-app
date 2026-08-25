@@ -1,0 +1,10 @@
+target/
+output/
+*.class
+*.jar
+.project
+.classpath
+.settings/
+.idea/
+.vscode/
+.bsp/
