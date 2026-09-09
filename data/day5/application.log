@@ -1,0 +1,10 @@
+2026-09-09 09:00:01 INFO Application started
+2026-09-09 09:05:12 INFO User login successful
+2026-09-09 09:10:25 ERROR Database connection failed
+2026-09-09 09:15:40 INFO Retrying database connection
+2026-09-09 09:20:18 WARN High memory usage detected
+2026-09-09 09:25:33 ERROR Payment service unavailable
+2026-09-09 09:30:45 INFO Payment service restored
+2026-09-09 09:35:10 ERROR Invalid customer request
+2026-09-09 09:40:22 INFO Application running normally
+2026-09-09 09:45:55 ERROR Timeout while processing order
