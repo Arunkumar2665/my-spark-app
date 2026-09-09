@@ -1,0 +1,5 @@
+Spark is a distributed processing engine
+Scala is used to build Spark applications
+SparkSession is the entry point for Spark SQL
+SparkContext coordinates Spark execution
+RDD stands for Resilient Distributed Dataset

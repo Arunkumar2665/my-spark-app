@@ -9,6 +9,8 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % "3.5.3"
 )
 
-javaOptions ++= Seq(
+Compile / run / fork := true
+
+Compile / run / javaOptions ++= Seq(
   "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"
 )
