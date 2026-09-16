@@ -2,11 +2,11 @@
 
 A hands-on learning project covering **Scala programming and Apache Spark** through a structured 30-day daily practice problem set.
 
-Each day is implemented separately so that the concepts, source code, input data, execution steps, and Git history can be tracked independently.
+Each day is implemented separately so that the concepts, source code, input data, execution steps, and progress can be tracked independently.
 
 ---
 
-## Project Objective
+# Project Objective
 
 The objective of this project is to build practical knowledge of:
 
@@ -18,16 +18,20 @@ The objective of this project is to build practical knowledge of:
 * RDDs
 * Transformations and actions
 * Lazy evaluation
+* Lineage and fault tolerance
+* DAG and Spark execution
+* Pair RDDs
 * Partitions and parallelism
 * Shuffle operations
 * Spark execution stages
-* Data processing using real sample datasets
+* Data aggregation
+* Data processing using sample datasets
 
 The project will be developed progressively from **Day 1 to Day 30**.
 
 ---
 
-## Technologies Used
+# Technologies Used
 
 * **Scala:** 2.12.18
 * **Apache Spark:** 3.5.3
@@ -41,7 +45,7 @@ The project will be developed progressively from **Day 1 to Day 30**.
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
 my-spark-app/
@@ -64,8 +68,23 @@ my-spark-app/
 │           ├── day4/
 │           │   └── Day4RDDCreation.scala
 │           │
-│           └── day5/
-│               └── Day5TransformationsActions.scala
+│           ├── day5/
+│           │   └── Day5TransformationsActions.scala
+│           │
+│           ├── day6/
+│           │   └── Day6WordCount.scala
+│           │
+│           ├── day7/
+│           │   └── Day7LineageFaultTolerance.scala
+│           │
+│           ├── day8/
+│           │   └── Day8DAGExecution.scala
+│           │
+│           ├── day9/
+│           │   └── Day9PairRDD.scala
+│           │
+│           └── day10/
+│               └── Day10Partitioning.scala
 │
 ├── data/
 │   ├── day3/
@@ -75,6 +94,9 @@ my-spark-app/
 │   │   └── customers.txt
 │   │
 │   ├── day5/
+│   │   └── application.log
+│   │
+│   ├── day6/
 │   │   └── application.log
 │   │
 │   ├── departments.csv
@@ -153,17 +175,21 @@ This means Spark runs locally using **2 CPU cores**.
 
 # Daily Progress
 
-| Day    | Topic                       | Status      |
-| ------ | --------------------------- | ----------- |
-| Day 1  | Scala Essentials            | ✅ Completed |
-| Day 2  | Scala Collections           | ✅ Completed |
-| Day 3  | Spark Setup                 | ✅ Completed |
-| Day 4  | RDD Creation                | ✅ Completed |
-| Day 5  | Transformations and Actions | ✅ Completed |
-| Day 6  | Upcoming                    | ⏳           |
-| Day 7  | Upcoming                    | ⏳           |
-| ...    | ...                         | ⏳           |
-| Day 30 | Upcoming                    | ⏳           |
+| Day    | Topic                                     | Status      |
+| ------ | ----------------------------------------- | ----------- |
+| Day 1  | Scala Essentials                          | ✅ Completed |
+| Day 2  | Scala Collections                         | ✅ Completed |
+| Day 3  | Spark Setup                               | ✅ Completed |
+| Day 4  | RDD Creation                              | ✅ Completed |
+| Day 5  | Transformations and Actions               | ✅ Completed |
+| Day 6  | Word Count                                | ✅ Completed |
+| Day 7  | Immutability, Lineage and Fault Tolerance | ✅ Completed |
+| Day 8  | DAG and Spark Execution                   | ✅ Completed |
+| Day 9  | Pair RDD                                  | ✅ Completed |
+| Day 10 | Partitioning                              | ✅ Completed |
+| Day 11 | Upcoming                                  | ⏳           |
+| ...    | ...                                       | ⏳           |
+| Day 30 | Upcoming                                  | ⏳           |
 
 ---
 
@@ -184,8 +210,6 @@ Learn and practice the fundamental concepts of Scala programming.
 * Collections fundamentals
 
 ## Implementation
-
-Source file:
 
 ```text
 src/main/scala/day1/Day1ScalaEssentials.scala
@@ -227,8 +251,6 @@ Practice Scala collections and commonly used collection operations.
 * Other collection transformations
 
 ## Implementation
-
-Source file:
 
 ```text
 src/main/scala/day2/Day2ScalaCollections.scala
@@ -276,8 +298,6 @@ data/day3/sample.txt
 
 ## Implementation
 
-Source file:
-
 ```text
 src/main/scala/day3/Day3SparkSetup.scala
 ```
@@ -288,7 +308,7 @@ src/main/scala/day3/Day3SparkSetup.scala
 sbt "runMain day3.Day3SparkSetup"
 ```
 
-The application was tested using different local configurations, including:
+The application was tested using local Spark configurations including:
 
 ```text
 local[2]
@@ -361,8 +381,6 @@ Example structure:
 
 ## Implementation
 
-Source file:
-
 ```text
 src/main/scala/day4/Day4RDDCreation.scala
 ```
@@ -380,9 +398,9 @@ Input Collection / File
         ↓
       RDD
         ↓
-   Transformations
+ Transformations
         ↓
-      Actions
+     Actions
         ↓
      Results
 ```
@@ -417,7 +435,7 @@ The customer RDD was processed using:
 local[2]
 ```
 
-and the application reported:
+The application reported:
 
 ```text
 Default parallelism: 2
@@ -469,11 +487,7 @@ Understand the difference between **Spark transformations and actions** and prac
 * Stages
 * Log analysis
 
----
-
 ## Implementation
-
-Source file:
 
 ```text
 src/main/scala/day5/Day5TransformationsActions.scala
@@ -485,193 +499,25 @@ src/main/scala/day5/Day5TransformationsActions.scala
 data/day5/application.log
 ```
 
----
+## Transformations and Actions
 
-## Step 1 — Create RDDs
-
-Two RDDs were created from Scala collections.
+The Day 5 implementation demonstrated:
 
 ```text
-RDD 1: 1, 2, 3, 4, 5
-RDD 2: 4, 5, 6, 7, 8
+RDD
+ ↓
+Transformations
+ ↓
+Actions
+ ↓
+Results
 ```
 
----
+`distinct()` was also used to demonstrate a transformation that requires a shuffle.
 
-## Step 2 — map Transformation
+## Log Analyzer
 
-The `map` transformation was used to square each number.
-
-```text
-Input:
-1, 2, 3, 4, 5
-
-Output:
-1, 4, 9, 16, 25
-```
-
----
-
-## Step 3 — filter Transformation
-
-The `filter` transformation was used to select even numbers.
-
-```text
-Input:
-1, 2, 3, 4, 5
-
-Output:
-2, 4
-```
-
----
-
-## Step 4 — flatMap Transformation
-
-Two sentences were converted into individual words.
-
-```text
-Spark is fast
-Scala works with Spark
-```
-
-Result:
-
-```text
-Spark, is, fast, Scala, works, with, Spark
-```
-
----
-
-## Step 5 — distinct Transformation
-
-`distinct()` removes duplicate values.
-
-Result:
-
-```text
-4, 5, 6, 7, 8
-```
-
-`distinct()` is an important Spark operation because it requires a **shuffle**.
-
-During execution, Spark created a `ShuffleMapStage` followed by a `ResultStage`, demonstrating the shuffle involved in `distinct()`.
-
----
-
-## Step 6 — union Transformation
-
-`union()` combines two RDDs.
-
-Result:
-
-```text
-1, 2, 3, 4, 5, 4, 5, 6, 7, 8
-```
-
-`union()` does not remove duplicates.
-
----
-
-# Transformations vs Actions
-
-## Transformations
-
-Transformations create a new RDD from an existing RDD.
-
-```text
-map
-filter
-flatMap
-distinct
-union
-```
-
-Transformations are **lazy**.
-
-They are not immediately executed when they are defined.
-
----
-
-## Actions
-
-Actions trigger Spark execution and return a result.
-
-```text
-count
-collect
-first
-take
-reduce
-```
-
-For example:
-
-```text
-Transformation
-      ↓
-Transformation
-      ↓
-    Action
-      ↓
-Spark executes the required computation
-```
-
----
-
-# Day 5 Actions
-
-The following actions were tested:
-
-### count
-
-```text
-Count: 5
-```
-
-### first
-
-```text
-First value: 1
-```
-
-### take
-
-```text
-First three values: 1, 2, 3
-```
-
-### collect
-
-```text
-Collect: 1, 2, 3, 4, 5
-```
-
-### reduce
-
-```text
-Reduce sum: 15
-```
-
----
-
-# Day 5 — Log Analyzer
-
-A simple log analyzer was implemented using Spark RDD operations.
-
-## Input
-
-```text
-data/day5/application.log
-```
-
-The log contains:
-
-* INFO messages
-* WARN messages
-* ERROR messages
-
-## Processing
+The application analyzed the sample log file and counted ERROR messages.
 
 ```text
 application.log
@@ -682,118 +528,680 @@ application.log
        ↓
     filter()
        ↓
-  ERROR messages
+ ERROR messages
        ↓
     count()
        ↓
  ERROR count
 ```
 
-The program counts all log entries and filters entries containing:
-
-```text
-ERROR
-```
-
 The sample log contains **10 total entries** and **4 ERROR messages**.
 
----
-
-# Day 5 — Partition Information
-
-The Spark application was executed using:
+## Partition Information
 
 ```text
 Spark master: local[2]
-```
-
-The observed configuration was:
-
-```text
 Default parallelism: 2
 Numbers RDD partitions: 2
 Log RDD partitions: 2
 ```
 
-This demonstrates the relationship between the local execution configuration and the number of partitions used by these RDDs.
-
----
-
-# Day 5 — Spark Execution Concepts
-
-## Lazy Evaluation
-
-Spark transformations are lazy.
-
-For example:
-
-```scala
-val squaredRDD = numbersRDD.map(number => number * number)
-```
-
-The `map` operation defines the transformation, but Spark executes it when an action such as:
-
-```scala
-squaredRDD.collect()
-```
-
-is called.
-
----
-
-## Shuffle
-
-A shuffle redistributes data between partitions.
-
-`distinct()` is an example of an operation that requires a shuffle.
-
-```text
-RDD
- ↓
-distinct()
- ↓
-Shuffle
- ↓
-ShuffleMapStage
- ↓
-ResultStage
-```
-
-This was visible in the Spark execution logs during Day 5.
-
----
-
-## Partitions
-
-An RDD is divided into partitions so that Spark can process different portions of the data in parallel.
-
-For this project:
-
-```text
-local[2]
-     ↓
-2 processing cores
-     ↓
-RDD partitions
-```
-
----
-
-# Day 5 Run Command
+## Run Command
 
 ```bash
 sbt "runMain day5.Day5TransformationsActions"
 ```
 
-## Completion
+## Result
 
 The Day 5 application completed successfully after executing the transformation, action, log-analysis, and partition exercises.
+
+## Git Commit
+
+```text
+35ee820 Implement Day 5 transformations and actions
+```
+
+---
+
+# Day 6 — Word Count
+
+## Objective
+
+Implement the classic **Word Count** problem using Spark RDD transformations and actions.
+
+## Concepts Covered
+
+* `flatMap`
+* `map`
+* `reduceByKey`
+* Case-insensitive word counting
+* Removing punctuation
+* Filtering empty words
+* Log word-frequency analysis
+* Top 10 frequent words
+* Shuffle
+* Partitions
+
+## Implementation
+
+```text
+src/main/scala/day6/Day6WordCount.scala
+```
+
+## Input Data
+
+```text
+data/day6/application.log
+```
+
+## Basic Word Count
+
+The basic pipeline was:
+
+```text
+Text RDD
+   ↓
+flatMap
+   ↓
+Individual words
+   ↓
+map
+   ↓
+(word, 1)
+   ↓
+reduceByKey
+   ↓
+Word counts
+```
+
+## Important Operations
+
+### flatMap
+
+Splits each line into individual words.
+
+### map
+
+Converts every word into a key-value pair:
+
+```text
+(word, 1)
+```
+
+### reduceByKey
+
+Adds the values belonging to the same word.
+
+```text
+(word, 1)
+(word, 1)
+     ↓
+(word, total)
+```
+
+## Case-Insensitive Counting
+
+Words were converted to lowercase before counting so that different cases are treated as the same word.
+
+## Punctuation Handling
+
+Punctuation was removed and empty words were filtered before aggregation.
+
+## Application Log Analysis
+
+The application log was processed to identify the most frequent words.
+
+Top observed words included:
+
+```text
+20260916 -> 14
+info     -> 7
+error    -> 5
+connection -> 3
+application -> 3
+```
+
+## Partition Information
+
+```text
+Spark master: local[2]
+Default parallelism: 2
+Log RDD partitions: 2
+Word count RDD partitions: 2
+```
+
+## Run Command
+
+```bash
+sbt "runMain day6.Day6WordCount"
+```
+
+## Result
+
+The Day 6 Word Count application was compiled and executed successfully.
+
+---
+
+# Day 7 — Immutability, Lineage and Fault Tolerance
+
+## Objective
+
+Understand RDD immutability, lineage, lazy evaluation and Spark fault tolerance.
+
+## Concepts Covered
+
+* RDD immutability
+* Lineage
+* Transformation chains
+* Lazy evaluation
+* Fault tolerance
+* Partition recomputation
+* RDD reuse
+
+## Implementation
+
+```text
+src/main/scala/day7/Day7LineageFaultTolerance.scala
+```
+
+## Transformation Chain
+
+The following RDD chain was implemented:
+
+```text
+numbersRDD
+    ↓
+  filter
+    ↓
+ evenRDD
+    ↓
+   map
+    ↓
+squaredRDD
+    ↓
+  filter
+    ↓
+greaterThanTenRDD
+```
+
+## Results
+
+Input:
+
+```text
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+```
+
+Even values:
+
+```text
+2, 4, 6, 8, 10
+```
+
+Squared values:
+
+```text
+4, 16, 36, 64, 100
+```
+
+Values greater than 10:
+
+```text
+16, 36, 64, 100
+```
+
+## RDD Immutability
+
+The original RDD remains unchanged.
+
+Each transformation creates a new RDD:
+
+```text
+numbersRDD
+    ↓
+evenRDD
+    ↓
+squaredRDD
+    ↓
+greaterThanTenRDD
+```
+
+## Lineage
+
+Spark maintains information about the transformations used to create an RDD.
+
+The actual RDD debug information was inspected using:
+
+```scala
+greaterThanTenRDD.toDebugString
+```
+
+## Fault Tolerance
+
+RDDs are fault tolerant because Spark stores lineage information.
+
+Conceptually:
+
+```text
+Lost Partition
+      ↓
+Use Lineage Information
+      ↓
+Recompute Required Transformations
+      ↓
+Recover Partition
+```
+
+If a partition is lost, Spark can recompute that partition from the required lineage rather than requiring the complete dataset to be recreated.
+
+## Run Command
+
+```bash
+sbt "runMain day7.Day7LineageFaultTolerance"
+```
+
+## Result
+
+The Day 7 application was compiled and executed successfully.
+
+---
+
+# Day 8 — DAG and Spark Execution
+
+## Objective
+
+Understand Spark's DAG, jobs, stages, tasks, partitions and shuffle boundaries.
+
+## Concepts Covered
+
+* DAG
+* Jobs
+* Stages
+* Tasks
+* Partitions
+* Narrow transformations
+* Wide transformations
+* Shuffle boundaries
+* `reduceByKey`
+* RDD lineage
+
+## Implementation
+
+```text
+src/main/scala/day8/Day8DAGExecution.scala
+```
+
+## Narrow Transformations
+
+The implementation used:
+
+```text
+filter
+map
+```
+
+These are narrow transformations because data does not need to move between partitions for these operations.
+
+## Wide Transformation
+
+The implementation used:
+
+```text
+reduceByKey
+```
+
+`reduceByKey` is a wide transformation because it requires a shuffle.
+
+## DAG
+
+The logical pipeline was:
+
+```text
+Parallelize
+     |
+     v
+  filter
+     |
+     v
+    map
+     |
+     v
+ reduceByKey
+     |
+   SHUFFLE
+     |
+     v
+  collect
+     |
+     v
+   Result
+```
+
+## Jobs, Stages, Tasks and Partitions
+
+### Job
+
+A Spark job is created when an action such as `collect()` is executed.
+
+### Stage
+
+A stage is a group of tasks separated by shuffle boundaries.
+
+### Task
+
+A task is a unit of work executed on one partition.
+
+### Partition
+
+A partition is a portion of distributed data processed by a task.
+
+## Stage Prediction
+
+For the pipeline:
+
+```text
+parallelize → filter → map → reduceByKey → collect
+```
+
+the expected stages are:
+
+```text
+Stage 0
+parallelize → filter → map
+        |
+      SHUFFLE
+        |
+        v
+Stage 1
+reduceByKey → collect
+```
+
+This single `reduceByKey → collect` job has an expected **2-stage execution**.
+
+## Observed Execution
+
+Spark execution logs showed a:
+
+```text
+ShuffleMapStage
+```
+
+followed by a:
+
+```text
+ResultStage
+```
+
+confirming the shuffle boundary.
+
+## Run Command
+
+```bash
+sbt "runMain day8.Day8DAGExecution"
+```
+
+## Result
+
+The Day 8 DAG and Spark execution application was compiled and executed successfully.
+
+---
+
+# Day 9 — Pair RDD
+
+## Objective
+
+Work with key-value RDDs and understand aggregation using Pair RDD operations.
+
+## Concepts Covered
+
+* Pair RDDs
+* Key-value data
+* `reduceByKey`
+* `groupByKey`
+* `mapValues`
+* Revenue aggregation
+* Department aggregation
+* Bank transaction aggregation
+* Shuffle
+* Aggregation performance
+
+## Implementation
+
+```text
+src/main/scala/day9/Day9PairRDD.scala
+```
+
+## Product Revenue
+
+Sample sales data was represented as:
+
+```text
+Laptop → 50000
+Mobile → 20000
+Laptop → 45000
+Tablet → 30000
+Mobile → 15000
+```
+
+Using `reduceByKey`, revenue was aggregated as:
+
+```text
+Laptop → 95000
+Mobile → 35000
+Tablet → 30000
+```
+
+## Department Revenue
+
+The department aggregation produced:
+
+```text
+Clothing → 45000
+Electronics → 80000
+Groceries → 25000
+```
+
+## reduceByKey
+
+`reduceByKey` aggregates values belonging to the same key and performs local aggregation before the shuffle.
+
+This can reduce the amount of data transferred during the shuffle.
+
+## groupByKey
+
+`groupByKey` groups all values belonging to the same key.
+
+It can result in more data being transferred during the shuffle and can require more memory.
+
+## mapValues
+
+`mapValues` modifies the values while preserving the keys.
+
+## Bank Transaction Aggregation
+
+Transactions were aggregated by account ID.
+
+Results:
+
+```text
+ACC101 → 8500.00
+ACC102 → 4500.00
+ACC103 → 7000.00
+```
+
+## Run Command
+
+```bash
+sbt "runMain day9.Day9PairRDD"
+```
+
+## Result
+
+The Day 9 Pair RDD application was compiled and executed successfully.
+
+---
+
+# Day 10 — Partitioning
+
+## Objective
+
+Understand Spark partitions and practice `repartition`, `coalesce`, and `partitionBy`.
+
+## Concepts Covered
+
+* Partition inspection
+* Partition count
+* `mapPartitionsWithIndex`
+* `repartition`
+* `coalesce`
+* `partitionBy`
+* `HashPartitioner`
+* Parallelism
+* Partition optimization
+
+## Implementation
+
+```text
+src/main/scala/day10/Day10Partitioning.scala
+```
+
+## Inspecting Partitions
+
+The base RDD was created from:
+
+```text
+1 to 20
+```
+
+The application inspected partition contents using:
+
+```scala
+mapPartitionsWithIndex
+```
+
+## Repartition
+
+The RDD was changed to:
+
+```text
+repartition(4)
+```
+
+Result:
+
+```text
+Partitions after repartition(4): 4
+```
+
+`repartition()` performs a shuffle and can be used to increase or decrease the number of partitions.
+
+## Coalesce
+
+The RDD was then reduced using:
+
+```text
+coalesce(2)
+```
+
+Result:
+
+```text
+Partitions after coalesce(2): 2
+```
+
+`coalesce()` is commonly used to reduce partitions and can avoid a full shuffle when decreasing the partition count.
+
+## partitionBy
+
+A Pair RDD containing account transactions was partitioned using:
+
+```scala
+new HashPartitioner(3)
+```
+
+Result:
+
+```text
+Partitions after partitionBy(HashPartitioner(3)): 3
+```
+
+`HashPartitioner` uses the key's hash value to determine the partition.
+
+## Repartition vs Coalesce
+
+### repartition
+
+* Changes partition count using a shuffle.
+* Can increase or decrease partitions.
+* Useful when data needs redistribution.
+
+### coalesce
+
+* Primarily used to decrease partitions.
+* Usually involves less data movement.
+* Useful after filtering or reducing data volume.
+
+## When to Increase Partitions
+
+Increase partitions when:
+
+* Dataset is large.
+* Existing partitions are too large.
+* More parallelism is needed.
+* Some tasks are taking too long.
+
+## When to Decrease Partitions
+
+Decrease partitions when:
+
+* Dataset becomes smaller after filtering.
+* Too many small partitions create overhead.
+* Fewer output files are required.
+
+## Optimization Scenario
+
+If a dataset has too few partitions:
+
+```text
+Dataset
+   ↓
+repartition()
+   ↓
+More partitions
+   ↓
+Better parallel processing
+```
+
+If a dataset becomes small after filtering:
+
+```text
+Large Dataset
+     ↓
+   filter
+     ↓
+Small Dataset
+     ↓
+ coalesce()
+     ↓
+Fewer unnecessary partitions
+```
+
+## Run Command
+
+```bash
+sbt "runMain day10.Day10Partitioning"
+```
+
+## Result
+
+The Day 10 partitioning application was compiled and executed successfully.
 
 ---
 
 # Important Spark Concepts Learned So Far
 
-By the end of Day 5, the project has covered:
+By the end of Day 10, the project has covered:
 
 ```text
 Scala
@@ -812,11 +1220,21 @@ Actions
   ↓
 Lazy Evaluation
   ↓
+Lineage
+  ↓
+Fault Tolerance
+  ↓
+DAG
+  ↓
 Shuffle
   ↓
 Stages
   ↓
 Tasks
+  ↓
+Pair RDD
+  ↓
+Partitioning
 ```
 
 ## Key Transformations
@@ -827,6 +1245,12 @@ filter
 flatMap
 distinct
 union
+reduceByKey
+groupByKey
+mapValues
+repartition
+coalesce
+partitionBy
 ```
 
 ## Key Actions
@@ -879,32 +1303,72 @@ sbt "runMain day4.Day4RDDCreation"
 sbt "runMain day5.Day5TransformationsActions"
 ```
 
+### Day 6
+
+```bash
+sbt "runMain day6.Day6WordCount"
+```
+
+### Day 7
+
+```bash
+sbt "runMain day7.Day7LineageFaultTolerance"
+```
+
+### Day 8
+
+```bash
+sbt "runMain day8.Day8DAGExecution"
+```
+
+### Day 9
+
+```bash
+sbt "runMain day9.Day9PairRDD"
+```
+
+### Day 10
+
+```bash
+sbt "runMain day10.Day10Partitioning"
+```
+
 ---
 
 # Git Workflow
 
-Each completed day is maintained as a separate Git commit.
+Days 1–5 were previously committed individually.
+
+Days 6–10 were completed as a batch and will be committed and pushed together with the updated README.
+
+Current history:
 
 ```text
-Day 1 → Commit → Push
-Day 2 → Commit → Push
-Day 3 → Commit → Push
-Day 4 → Commit → Push
-Day 5 → Commit → Push
-Day 6 → Commit → Push
-...
-Day 30 → Commit → Push
+Day 1 → 1f4cad7
+Day 2 → bba181d
+Day 3 → 21d336d
+Day 4 → a3658c7
+Day 5 → 35ee820
+Day 6–10 → New batch commit
 ```
 
-## Current Commit History
+The workflow for the current batch is:
 
-| Day   | Commit                                                  |
-| ----- | ------------------------------------------------------- |
-| Day 1 | `1f4cad7` — Implement Day 1 Scala essentials            |
-| Day 2 | `bba181d` — Implement Day 2 Scala collections           |
-| Day 3 | `21d336d` — Implement Day 3 Spark setup                 |
-| Day 4 | `a3658c7` — Implement Day 4 RDD creation                |
-| Day 5 | `35ee820` — Implement Day 5 transformations and actions |
+```text
+Complete Days 6–10
+        ↓
+Update README
+        ↓
+Verify files
+        ↓
+git add
+        ↓
+git commit
+        ↓
+git push
+        ↓
+Verify GitHub status
+```
 
 ---
 
@@ -925,13 +1389,19 @@ git add .
 Commit:
 
 ```bash
-git commit -m "Implement Day X ..."
+git commit -m "Implement Days 6-10 and update README"
 ```
 
 Push:
 
 ```bash
-git push -u origin main
+git push origin main
+```
+
+Verify:
+
+```bash
+git status
 ```
 
 ---
@@ -947,24 +1417,26 @@ Each day follows the same workflow:
         ↓
 3. Create sample input data
         ↓
-4. Run the application
+4. Compile the application
         ↓
-5. Verify the output
+5. Run the application
         ↓
-6. Understand Spark execution
+6. Verify the output
         ↓
-7. Check partitions / shuffle / performance
+7. Understand Spark execution
         ↓
-8. Commit the work
+8. Check partitions / shuffle / performance
         ↓
-9. Push to GitHub
+9. Update documentation
+        ↓
+10. Commit and push
 ```
 
 ---
 
 # Future Plan
 
-The project will continue with the same structure for the remaining days.
+Completed:
 
 ```text
 Day 1  ✅
@@ -972,13 +1444,24 @@ Day 2  ✅
 Day 3  ✅
 Day 4  ✅
 Day 5  ✅
-Day 6  ⏳
-Day 7  ⏳
+Day 6  ✅
+Day 7  ✅
+Day 8  ✅
+Day 9  ✅
+Day 10 ✅
+```
+
+Upcoming:
+
+```text
+Day 11 ⏳
+Day 12 ⏳
+Day 13 ⏳
 ...
 Day 30 ⏳
 ```
 
-Each new day will have:
+Each new day will continue to have:
 
 * Separate source folder
 * Separate input data where required
@@ -986,8 +1469,7 @@ Each new day will have:
 * Tested output
 * Concept explanation
 * Performance observations
-* Separate Git commit
-* GitHub push
+* Git tracking
 
 ---
 
@@ -1001,11 +1483,10 @@ Scala + Apache Spark Learning Project
 
 # Repository Status
 
-**Progress: 5 / 30 Days Completed**
+**Progress: 10 / 30 Days Completed**
 
 ```text
-█████░░░░░░░░░░░░░░░░░░░░░  16.7%
+██████████░░░░░░░░░░░░░░░░░░  33.3%
 ```
 
-More Spark and Scala concepts will be added as the 30-day practice progresses.
-
+More Scala and Apache Spark concepts will be added as the 30-day practice progresses.
