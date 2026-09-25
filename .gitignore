@@ -8,3 +8,4 @@ output/
 .idea/
 .vscode/
 .bsp/
+*:Zone.Identifier

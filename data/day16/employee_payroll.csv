@@ -1,0 +1,13 @@
+employee_id,name,department,location,salary
+E101,Arun,IT,Chennai,75000
+E102,Ravi,IT,Chennai,85000
+E103,Meena,HR,Bangalore,65000
+E104,Kiran,HR,Bangalore,70000
+E105,Divya,Finance,Hyderabad,90000
+E106,Ajay,Finance,Hyderabad,95000
+E107,Priya,IT,Hyderabad,80000
+E108,Vijay,Sales,Chennai,60000
+E109,Anitha,Sales,Chennai,70000
+E110,Suresh,Finance,Chennai,100000
+E111,Kavya,HR,Chennai,72000
+E112,Rahul,Sales,Hyderabad,68000

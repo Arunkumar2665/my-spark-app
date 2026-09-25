@@ -187,8 +187,25 @@ This means Spark runs locally using **2 CPU cores**.
 | Day 8  | DAG and Spark Execution                   | ✅ Completed |
 | Day 9  | Pair RDD                                  | ✅ Completed |
 | Day 10 | Partitioning                              | ✅ Completed |
-| Day 11 | Upcoming                                  | ⏳           |
-| ...    | ...                                       | ⏳           |
+| Day 11 | Broadcast and Accumulators               | ✅ Completed |
+| Day 12 | Cache and Persist                         | ✅ Completed |
+| Day 13 | Spark SQL Basics                          | ✅ Completed |
+| Day 14 | DataFrame and Dataset                     | ✅ Completed |
+| Day 15 | UDF Practice                              | ✅ Completed |
+| Day 16 | Aggregations                              | ✅ Completed |
+| Day 17 | Window Functions                          | ✅ Completed |
+| Day 18 | Joins                                     | ✅ Completed |
+| Day 19 | Broadcast Join                            | ✅ Completed |
+| Day 20 | File Formats and Output                   | ✅ Completed |
+| Day 21 | Upcoming                                  | ⏳           |
+| Day 22 | Upcoming                                  | ⏳           |
+| Day 23 | Upcoming                                  | ⏳           |
+| Day 24 | Upcoming                                  | ⏳           |
+| Day 25 | Upcoming                                  | ⏳           |
+| Day 26 | Upcoming                                  | ⏳           |
+| Day 27 | Upcoming                                  | ⏳           |
+| Day 28 | Upcoming                                  | ⏳           |
+| Day 29 | Upcoming                                  | ⏳           |
 | Day 30 | Upcoming                                  | ⏳           |
 
 ---
@@ -1199,6 +1216,427 @@ The Day 10 partitioning application was compiled and executed successfully.
 
 ---
 
+# Day 11 — Broadcast and Accumulators
+
+## Objective
+
+Understand Spark broadcast variables and accumulators for distributed processing.
+
+## Concepts Covered
+
+- Broadcast variables
+- Accumulators
+- Distributed updates
+- Small reference datasets
+- Transaction validation
+
+## Implementation
+
+`src/main/scala/day11/Day11BroadcastAccumulator.scala`
+
+Input: `data/day11/transactions.csv`
+
+The application broadcasts a product reference map and uses an accumulator to count invalid transaction records while processing transactions.
+
+### Results
+
+- Valid transactions: 6
+- Invalid transactions: 2
+- Bad records: 2
+- Valid transaction revenue: 510000.00
+- Invalid transactions referenced product `P999`
+
+### Run
+
+```bash
+sbt "runMain day11.Day11BroadcastAccumulator"
+```
+
+### Evidence
+
+`evidence/day11-20-evidence/Day11/`
+
+---
+
+# Day 12 — Cache and Persist
+
+## Objective
+
+Understand Spark caching and persistence when an RDD is reused by multiple actions.
+
+## Concepts Covered
+
+- `cache()`
+- `persist()`
+- Storage levels
+- RDD reuse
+- Memory usage
+- Recomputing transformations
+- When caching can hurt performance
+
+## Implementation
+
+`src/main/scala/day12/Day12CachePersist.scala`
+
+Input: `data/day12/transactions.csv`
+
+The application demonstrates reuse of a processed RDD, caching, persistence, and different storage-level choices.
+
+Caching can be unnecessary when data is used only once or when the cached dataset creates excessive memory pressure.
+
+### Run
+
+```bash
+sbt "runMain day12.Day12CachePersist"
+```
+
+### Evidence
+
+`evidence/day11-20-evidence/Day12/`
+
+---
+
+# Day 13 — Spark SQL Basics
+
+## Objective
+
+Practice DataFrame and Spark SQL operations using structured customer data.
+
+## Concepts Covered
+
+- DataFrame creation
+- CSV input
+- Schema inspection
+- select
+- filter
+- withColumn
+- Temporary views
+- Spark SQL
+- Aggregation
+
+## Implementation
+
+`src/main/scala/day13/Day13SparkSQLBasics.scala`
+
+Input: `data/day13/customers.csv`
+
+The application reads customer data from CSV, inspects the schema, filters records, creates a `spend_category` column, creates a temporary SQL view, and performs SQL aggregation.
+
+### Results
+
+High-value customers identified: **4**
+
+City-level spending:
+
+- Bangalore: 278000
+- Chennai: 219000
+- Hyderabad: 163000
+- Delhi: 96000
+
+Premium customers included:
+
+- Suresh: 150000
+- Ajay: 125000
+
+### Run
+
+`sbt "runMain day13.Day13SparkSQLBasics"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day13/`
+
+---
+
+# Day 14 — DataFrame and Dataset
+
+## Objective
+
+Understand DataFrames and Datasets and practice typed Dataset processing.
+
+## Concepts Covered
+
+- Case classes
+- DataFrames
+- Datasets
+- DataFrame to Dataset
+- Dataset to DataFrame
+- Type safety
+- Encoders
+- Catalyst optimization
+- Typed operations
+- Payroll processing
+
+## Implementation
+
+`src/main/scala/day14/Day14DataFrameDataset.scala`
+
+Input: `data/day14/employees.csv`
+
+The application defines an Employee case class and converts the employee DataFrame into a typed Dataset.
+
+It performs typed salary processing, calculates a 10% bonus, and converts the Dataset back into a DataFrame.
+
+### Run
+
+`sbt "runMain day14.Day14DataFrameDataset"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day14/`
+
+---
+
+# Day 15 — UDF Practice
+
+## Objective
+
+Create and use Scala User Defined Functions with Spark DataFrames and Spark SQL.
+
+## Concepts Covered
+
+- Scala UDF
+- withColumn
+- Risk classification
+- Built-in Spark expressions
+- UDF registration
+- Spark SQL catalog
+
+## Implementation
+
+`src/main/scala/day15/Day15UDFPractice.scala`
+
+Input: `data/day15/customers.csv`
+
+Risk classification:
+
+- Amount >= 100000 → HIGH_RISK
+- Amount >= 50000 → MEDIUM_RISK
+- Otherwise → LOW_RISK
+
+### Results
+
+- HIGH_RISK: 3
+- MEDIUM_RISK: 2
+- LOW_RISK: 5
+
+High-risk customers included:
+
+- Ajay: 250000
+- Suresh: 180000
+- Kiran: 120000
+
+### Run
+
+`sbt "runMain day15.Day15UDFPractice"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day15/`
+
+---
+
+# Day 16 — Aggregations
+
+## Objective
+
+Practice Spark aggregation functions and grouped aggregations.
+
+## Concepts Covered
+
+- count
+- sum
+- avg
+- min
+- max
+- groupBy
+- Multiple grouping columns
+- HAVING-like filtering
+
+## Implementation
+
+`src/main/scala/day16/Day16Aggregations.scala`
+
+Input: `data/day16/employee_payroll.csv`
+
+### Results
+
+- Employees: 12
+- Total payroll: 930000
+- Average salary: 77500
+- Minimum salary: 60000
+- Maximum salary: 100000
+
+The application also demonstrates grouped aggregation and filtering aggregated results.
+
+### Run
+
+`sbt "runMain day16.Day16Aggregations"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day16/`
+
+---
+
+# Day 17 — Window Functions
+
+## Objective
+
+Practice Spark SQL window functions for ranking, ordering, and accessing previous or next records.
+
+## Concepts Covered
+
+- row_number
+- rank
+- dense_rank
+- partitionBy
+- Top-N per group
+- lag
+- lead
+- Latest-record selection
+
+## Implementation
+
+`src/main/scala/day17/Day17WindowFunctions.scala`
+
+Input: `data/day17/student_scores.csv`
+
+The application demonstrates ranking students within courses, selecting the top three students per course, accessing previous and next records using lag and lead, and selecting the latest record for each customer.
+
+### Run
+
+`sbt "runMain day17.Day17WindowFunctions"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day17/`
+
+---
+
+# Day 18 — Joins
+
+## Objective
+
+Practice different Spark join types and understand join execution plans.
+
+## Concepts Covered
+
+- Inner join
+- Left join
+- Right join
+- Full outer join
+- Three-way joins
+- Null handling
+- coalesce
+- Column aliases
+- Physical execution plan
+- Shuffle Sort Merge Join
+
+## Implementation
+
+`src/main/scala/day18/Day18Joins.scala`
+
+Inputs:
+
+- `data/day18/orders.csv`
+- `data/day18/customers.csv`
+- `data/day18/payments.csv`
+
+The application demonstrates multiple join types, a three-way join, null handling with coalesce, aliases, and inspection of the physical execution plan.
+
+### Run
+
+`sbt "runMain day18.Day18Joins"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day18/`
+
+---
+
+# Day 19 — Broadcast Join
+
+## Objective
+
+Understand broadcast joins and compare them with regular joins.
+
+## Concepts Covered
+
+- Regular joins
+- Broadcast joins
+- broadcast()
+- BroadcastHashJoin
+- BroadcastExchange
+- Join optimization
+- Physical execution plans
+
+## Implementation
+
+`src/main/scala/day19/Day19BroadcastJoin.scala`
+
+Inputs:
+
+- `data/day19/transactions.csv`
+- `data/day19/branches.csv`
+
+The application performs a normal join and an explicit broadcast join between transactions and the smaller branch reference dataset.
+
+The physical execution plan demonstrates BroadcastHashJoin and BroadcastExchange.
+
+### Run
+
+`sbt "runMain day19.Day19BroadcastJoin"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day19/`
+
+---
+
+# Day 20 — File Formats and Output
+
+## Objective
+
+Practice reading and writing common Spark file formats and creating partitioned output.
+
+## Concepts Covered
+
+- CSV
+- JSON
+- Parquet
+- Reading files
+- Writing files
+- Parquet readback
+- Partitioned output
+- repartition
+
+## Implementation
+
+`src/main/scala/day20/Day20FileFormatsOutput.scala`
+
+Input: `data/day20/sales.csv`
+
+The application reads and writes CSV, JSON, and Parquet data, reads the generated Parquet data back, creates partitioned output by year, month, and day, and demonstrates repartitioning from one partition to two partitions.
+
+### Output
+
+Partitioned output is generated under:
+
+`data/day20/output/`
+
+The output directory is ignored by Git.
+
+### Run
+
+`sbt "runMain day20.Day20FileFormatsOutput"`
+
+### Evidence
+
+`evidence/day11-20-evidence/Day20/`
+
+---
+
 # Important Spark Concepts Learned So Far
 
 By the end of Day 10, the project has covered:
@@ -1483,10 +1921,10 @@ Scala + Apache Spark Learning Project
 
 # Repository Status
 
-**Progress: 10 / 30 Days Completed**
+**Progress: 20 / 30 Days Completed**
 
 ```text
-██████████░░░░░░░░░░░░░░░░░░  33.3%
+████████████████████░░░░░░░░  66.7%
 ```
 
 More Scala and Apache Spark concepts will be added as the 30-day practice progresses.

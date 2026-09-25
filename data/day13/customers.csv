@@ -1,0 +1,11 @@
+customer_id,name,age,city,total_spend
+C101,Arun,22,Chennai,45000.0
+C102,Ravi,28,Bangalore,72000.0
+C103,Meena,35,Hyderabad,38000.0
+C104,Kiran,31,Chennai,91000.0
+C105,Divya,26,Bangalore,56000.0
+C106,Ajay,42,Hyderabad,125000.0
+C107,Priya,29,Delhi,67000.0
+C108,Vijay,38,Chennai,83000.0
+C109,Anitha,24,Delhi,29000.0
+C110,Suresh,45,Bangalore,150000.0

@@ -1,0 +1,9 @@
+transaction_id,product_id,quantity
+T001,P101,2
+T002,P102,1
+T003,P999,3
+T004,P101,4
+T005,P103,2
+T006,P999,1
+T007,P102,5
+T008,P104,2

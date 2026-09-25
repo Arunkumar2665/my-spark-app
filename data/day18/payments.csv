@@ -1,0 +1,9 @@
+payment_id,payment_method,payment_status
+P101,UPI,PAID
+P102,CreditCard,PAID
+P103,NetBanking,PAID
+P104,UPI,PENDING
+P105,CreditCard,PAID
+P106,UPI,PAID
+P107,DebitCard,FAILED
+P108,UPI,PAID

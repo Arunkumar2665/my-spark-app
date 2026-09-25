@@ -1,0 +1,11 @@
+employee_id,name,department,salary
+E101,Arun,Engineering,75000.0
+E102,Ravi,Finance,68000.0
+E103,Meena,Engineering,82000.0
+E104,Kiran,HR,62000.0
+E105,Divya,Finance,71000.0
+E106,Ajay,Engineering,95000.0
+E107,Priya,HR,66000.0
+E108,Vijay,Finance,78000.0
+E109,Anitha,Engineering,88000.0
+E110,Suresh,HR,73000.0

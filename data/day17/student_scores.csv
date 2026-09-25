@@ -1,0 +1,16 @@
+student_id,student_name,course,exam_date,score
+S101,Arun,Data Engineering,2026-09-01,92
+S102,Ravi,Data Engineering,2026-09-01,85
+S103,Meena,Data Engineering,2026-09-01,92
+S104,Kiran,Data Engineering,2026-09-01,78
+S105,Divya,Data Engineering,2026-09-01,88
+S106,Ajay,Spark,2026-09-01,95
+S107,Priya,Spark,2026-09-01,89
+S108,Vijay,Spark,2026-09-01,95
+S109,Anitha,Spark,2026-09-01,82
+S110,Rahul,Spark,2026-09-01,89
+S111,Kavya,Kafka,2026-09-01,91
+S112,Suresh,Kafka,2026-09-01,86
+S113,Neha,Kafka,2026-09-01,91
+S114,Manoj,Kafka,2026-09-01,80
+S115,Swathi,Kafka,2026-09-01,75
